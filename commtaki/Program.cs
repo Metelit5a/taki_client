@@ -6,21 +6,77 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace commtaki
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        static Socket sender;
+
         [STAThread]
         static void Main()
         {
            
         }
 
-        // ExecuteClient() Method 
+        //joining a game
+        static void JoinGame()
+        {
+            //  creating multiple disctionaries to send data to the server
+            Dictionary<string, object> join_game_dic = new Dictionary<string, object>();
+            Dictionary<string, string> args_dic = new Dictionary<string, string>();
+
+            join_game_dic.Add("code", "join_game");
+
+            args_dic.Add("game_id", "0");
+            args_dic.Add("player_name", "");
+            args_dic.Add("password", "");
+
+            join_game_dic.Add("args", args_dic);
+
+            //creating a json message to send to the server and sending it
+            string json_message = JsonConvert.SerializeObject(join_game_dic);
+            byte[] byData = Encoding.ASCII.GetBytes(json_message);
+            sender.Send(byData);
+
+            byte[] buffer = new byte[1024];
+
+            // Receive the response from the server  
+            int bytesRec = sender.Receive(buffer);
+            string rcv_msg = Encoding.ASCII.GetString(buffer);
+
+        }
+
+        //creating a game
+        static void CreateGame()
+        {
+            //  creating multiple disctionaries to send data to the server
+            Dictionary<string, object> create_game_dic_1 = new Dictionary<string, object>();
+            Dictionary<string, string> args_dic = new Dictionary<string, string>();
+
+            create_game_dic_1.Add("code", "create_game");
+
+            args_dic.Add("lobby_name", "");
+            args_dic.Add("player_name", "");
+            args_dic.Add("password", "");
+
+            create_game_dic_1.Add("args", args_dic);
+
+            //creating a json message to send to the server and sending it
+            string json_message = JsonConvert.SerializeObject(create_game_dic_1);
+            byte[] byData = Encoding.ASCII.GetBytes(json_message);
+            sender.Send(byData);
+
+            byte[] buffer = new byte[1024];
+
+            // Receive the response from the server  
+            int bytesRec = sender.Receive(buffer);
+            string rcv_msg = Encoding.ASCII.GetString(buffer);
+
+        }
+
+        //connecting to the server
         static void ExecuteClient()
         {
 
@@ -37,41 +93,16 @@ namespace commtaki
 
                 // Creation TCP/IP Socket using  
                 // Socket Class Costructor 
-                Socket sender = new Socket(ipAddr.AddressFamily,
+                sender = new Socket(ipAddr.AddressFamily,
                            SocketType.Stream, ProtocolType.Tcp);
 
                 try
                 {
 
-                    // Connect Socket to the remote  
-                    // endpoint using method Connect() 
+                    // Connect Socket to the remote
                     sender.Connect(localEndPoint);
 
-                    // We print EndPoint information  
-                    // that we are connected 
-                    Console.WriteLine("Socket connected to -> {0} ",
-                                  sender.RemoteEndPoint.ToString());
-
-                    // Creation of messagge that 
-                    // we will send to Server 
-                    byte[] messageSent = Encoding.ASCII.GetBytes("Test Client<EOF>");
-                    int byteSent = sender.Send(messageSent);
-
-                    // Data buffer 
-                    byte[] messageReceived = new byte[1024];
-
-                    // We receive the messagge using  
-                    // the method Receive(). This  
-                    // method returns number of bytes 
-                    // received, that we'll use to  
-                    // convert them to string 
-                    int byteRecv = sender.Receive(messageReceived);
-                    Console.WriteLine("Message from Server -> {0}",
-                          Encoding.ASCII.GetString(messageReceived,
-                                                     0, byteRecv));
-
-                    // Close Socket using  
-                    // the method Close() 
+                    
                     sender.Shutdown(SocketShutdown.Both);
                     sender.Close();
                 }
