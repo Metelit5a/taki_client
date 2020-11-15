@@ -76,6 +76,108 @@ namespace commtaki
 
         }
 
+        static void LeaveGame()
+        {
+            //  creating multiple disctionaries to send data to the server
+            Dictionary<string, object> leave_game_dic_1 = new Dictionary<string, object>();
+            Dictionary<string, string> args_dic = new Dictionary<string, string>();
+
+            leave_game_dic_1.Add("code", "leave_game");
+ 
+            args_dic.Add("jwt", "");
+
+            leave_game_dic_1.Add("args", args_dic);
+
+            //creating a json message to send to the server and sending it
+            string json_message = JsonConvert.SerializeObject(leave_game_dic_1);
+            byte[] byData = Encoding.ASCII.GetBytes(json_message);
+            sender.Send(byData);
+
+            byte[] buffer = new byte[1024];
+
+            // Receive the response from the server  
+            int bytesRec = sender.Receive(buffer);
+            string rcv_msg = Encoding.ASCII.GetString(buffer);
+
+        }
+
+        static void StartGame()
+        {
+            //  creating multiple disctionaries to send data to the server
+            Dictionary<string, object> start_game_dic_1 = new Dictionary<string, object>();
+            Dictionary<string, string> args_dic = new Dictionary<string, string>();
+
+            start_game_dic_1.Add("code", "start_game");
+
+            args_dic.Add("jwt", "");
+
+            start_game_dic_1.Add("args", args_dic);
+
+            //creating a json message to send to the server and sending it
+            string json_message = JsonConvert.SerializeObject(start_game_dic_1);
+            byte[] byData = Encoding.ASCII.GetBytes(json_message);
+            sender.Send(byData);
+
+            byte[] buffer = new byte[1024];
+
+            // Receive the response from the server  
+            int bytesRec = sender.Receive(buffer);
+            string rcv_msg = Encoding.ASCII.GetString(buffer);
+
+        }
+
+        static void PlaceCards(string[] chosen_cards)
+        {
+            //  creating multiple disctionaries to send data to the server
+            Dictionary<string, object> place_cards_dic_1 = new Dictionary<string, object>();
+            Dictionary<string, object> args_dic = new Dictionary<string, object> ();
+
+            place_cards_dic_1.Add("code", "place_cards");
+
+             
+            args_dic.Add("jwt", "");
+            args_dic.Add("cards", chosen_cards);
+
+            place_cards_dic_1.Add("args", args_dic);
+
+            //creating a json message to send to the server and sending it
+            string json_message = JsonConvert.SerializeObject(place_cards_dic_1);
+            byte[] byData = Encoding.ASCII.GetBytes(json_message);
+            sender.Send(byData);
+
+            byte[] buffer = new byte[1024];
+
+            // Receive the response from the server  
+            int bytesRec = sender.Receive(buffer);
+            string rcv_msg = Encoding.ASCII.GetString(buffer);
+
+        }
+
+        static void TakeCards()
+        {
+            //  creating multiple disctionaries to send data to the server
+            Dictionary<string, object> take_cards_dic_1 = new Dictionary<string, object>();
+            Dictionary<string, string> args_dic = new Dictionary<string, string>();
+
+            take_cards_dic_1.Add("code", "take_cards");
+
+            args_dic.Add("jwt", "");
+             
+            take_cards_dic_1.Add("args", args_dic);
+
+            //creating a json message to send to the server and sending it
+            string json_message = JsonConvert.SerializeObject(take_cards_dic_1);
+            byte[] byData = Encoding.ASCII.GetBytes(json_message);
+            sender.Send(byData);
+
+            byte[] buffer = new byte[1024];
+
+            // Receive the response from the server  
+            int bytesRec = sender.Receive(buffer);
+            string rcv_msg = Encoding.ASCII.GetString(buffer);
+        }
+
+
         //connecting to the server
         static void ExecuteClient()
         {
